@@ -1,0 +1,60 @@
+services:
+  db:
+    image: mariadb:11
+    container_name: todo-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: todo_user
+      MYSQL_PASSWORD: todo_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - todo-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo-backend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: todo_db
+      DB_USERNAME: todo_user
+      DB_PASSWORD: todo_pass
+    depends_on:
+      - db
+    networks:
+      - todo-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: todo-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000/api
+    command: yarn dev --host
+    networks:
+      - todo-network
+
+volumes:
+  db_data:
+
+networks:
+  todo-network:
+    driver: bridge
