@@ -1,0 +1,13 @@
+{
+    "FirstName": "Admin",
+    "LastName": "User",
+    "ContactType": "PERSON",
+    "OrganizationName": "QuickTodo",
+    "AddressLine1": "1-1-1 Shibuya",
+    "City": "Shibuya-ku",
+    "State": "Tokyo",
+    "CountryCode": "JP",
+    "ZipCode": "150-0002",
+    "PhoneNumber": "+81.3123456789",
+    "Email": "admin@quicktodo.xyz"
+}

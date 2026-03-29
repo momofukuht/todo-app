@@ -1,0 +1,49 @@
+service: quicktodo-backend
+
+provider:
+    name: aws
+    region: ap-northeast-1
+    runtime: provided.al2
+    environment:
+        BREF_LOAD_SECRETS: ssm
+        APP_ENV: production
+        APP_DEBUG: false
+        LOG_CHANNEL: stderr
+        DB_CONNECTION: mysql
+    iam:
+        role: arn:aws:iam::#{AWS::AccountId}:role/todo-lambda-role
+    vpc:
+        securityGroupIds:
+            - ${env:SECURITY_GROUP_ID}
+        subnetIds:
+            - ${env:SUBNET_ID_1}
+            - ${env:SUBNET_ID_2}
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    api:
+        handler: public/index.php
+        description: 'QuickTodo API'
+        timeout: 28
+        memorySize: 1024
+        layers:
+            - ${bref:layer.php-83-fpm}
+        events:
+            - httpApi: '*'
+
+package:
+    patterns:
+        - '!node_modules/**'
+        - '!tests/**'
+        - '!storage/logs/**'
+        - '!storage/framework/cache/**'
+        - '!storage/framework/sessions/**'
+        - '!storage/framework/testing/**'
+        - '!.env'
+        - '!.env.example'
+        - '!.git/**'
+        - '!.github/**'
+        - '!README.md'
+        - '!.gitignore'

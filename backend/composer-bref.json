@@ -1,0 +1,6 @@
+{
+    "require": {
+        "bref/bref": "^2.3",
+        "bref/laravel-bridge": "^2.5"
+    }
+}
